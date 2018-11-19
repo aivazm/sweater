@@ -1,14 +1,17 @@
 package com.am.sweater.domain;
 
+import com.am.sweater.domain.util.MessageHelper;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Message {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @NotBlank(message = "Please, fill the message")
@@ -29,6 +32,16 @@ public class Message {
         this.filename = filename;
     }
 
+    @ManyToMany
+    @JoinTable(
+            name="message_likes",
+            joinColumns = { @JoinColumn(name = "message_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+    )
+    private Set<User> likes = new HashSet<>();
+
+
+
     public Message() {
     }
 
@@ -39,10 +52,7 @@ public class Message {
     }
 
     public String getAuthorName(){
-        if (author != null)
-            return author.getUsername();
-        else
-            return "<none>";
+        return MessageHelper.getAuthorName(author);
     }
 
     public Integer getId() {
@@ -75,5 +85,13 @@ public class Message {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public Set<User> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<User> likes) {
+        this.likes = likes;
     }
 }
