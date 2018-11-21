@@ -35,6 +35,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Message> messages;
 
+    //Подписки
     @ManyToMany
     @JoinTable(
             name = "user_subscriptions",
